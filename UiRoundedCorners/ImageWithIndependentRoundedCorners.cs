@@ -62,14 +62,23 @@ namespace Nobi.UiRoundedCorners {
 		}
 
 		public void Validate() {
-			if (material == null) {
-				material = new Material(Shader.Find("UI/RoundedCorners/IndependentRoundedCorners"));
+			if (material == null && image != null)
+			{
+				if (image.material != null && image.material.shader != null && image.material.shader.name == "UI/RoundedCorners/IndependentRoundedCorners")
+				{
+					material = image.material;
+				}
+				else
+				{
+					material = new Material(Shader.Find("UI/RoundedCorners/IndependentRoundedCorners"));
+					material.hideFlags = HideFlags.HideAndDontSave;
+				}
 			}
 
 			if (image == null) {
 				TryGetComponent(out image);
 			}
-
+				
 			if (image != null) {
 				image.material = material;
 			}
@@ -121,7 +130,7 @@ namespace Nobi.UiRoundedCorners {
 			rect2props.x = origin.x;
 			rect2props.y = origin.y;
 		}
-	}
+	}	
 }
 
 /// <summary>

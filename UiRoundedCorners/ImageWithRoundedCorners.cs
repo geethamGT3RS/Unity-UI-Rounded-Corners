@@ -16,8 +16,8 @@ namespace Nobi.UiRoundedCorners {
 		[HideInInspector, SerializeField] private MaskableGraphic image;
 
 		private void OnValidate() {
-			Validate();
-			Refresh();
+				Validate();
+				Refresh();
 		}
 
 		private void OnDestroy() {
@@ -50,14 +50,23 @@ namespace Nobi.UiRoundedCorners {
 		}
 
 		public void Validate() {
-			if (material == null) {
-				material = new Material(Shader.Find("UI/RoundedCorners/RoundedCorners"));
+			if (material == null && image != null)
+			{
+				if (image.material != null && image.material.shader != null && image.material.shader.name == "UI/RoundedCorners/RoundedCorners")
+				{
+					material = image.material;
+				}
+				else
+				{
+					material = new Material(Shader.Find("UI/RoundedCorners/RoundedCorners"));
+					material.hideFlags = HideFlags.HideAndDontSave;
+				}
 			}
 
 			if (image == null) {
 				TryGetComponent(out image);
 			}
-
+				
 			if (image != null) {
 				image.material = material;
 			}
@@ -72,8 +81,10 @@ namespace Nobi.UiRoundedCorners {
 
 			//Multiply radius value by 2 to make the radius value appear consistent with ImageWithIndependentRoundedCorners script.
 			//Right now, the ImageWithIndependentRoundedCorners appears to have double the radius than this.
-			material.SetVector(Props, new Vector4(rect.width, rect.height, radius * 2, 0));
-			material.SetVector(prop_OuterUV, outerUV);
+			if(material != null) {
+				material.SetVector(Props, new Vector4(rect.width, rect.height, radius * 2, 0));
+				material.SetVector(prop_OuterUV, outerUV);
+			}
 		}
 	}
 }
